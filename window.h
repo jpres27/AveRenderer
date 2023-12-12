@@ -17,5 +17,3 @@ void init_window(int height, int width, std::string window_name, TeWindow *te_wi
 void destroy_window(TeWindow *te_window);
 int create_window_surface(VkInstance instance, TeWindow *window, VkSurfaceKHR *surface);
 VkExtent2D getExtent(TeWindow *te_window);
-
-

@@ -3,8 +3,8 @@
 #include "window.h"
 #include "device.h"
 
-#define HEIGHT 800
-#define WIDTH 600
+extern uint32_t WIDTH;
+extern uint32_t HEIGHT;
 
 void render_loop(TeWindow *te_window);
 void render();
