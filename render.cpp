@@ -10,7 +10,7 @@ void render_loop(TeWindow *te_window) {
 
 void render() {
     init_window(HEIGHT, WIDTH, "Ave!", &te_window);
-    //initVulkan()
+    create_instance();
     render_loop(&te_window);
     destroy_window(&te_window);
 }
