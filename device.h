@@ -18,12 +18,16 @@ struct queue_family_indices {
   bool isComplete() { return graphicsFamilyHasValue && presentFamilyHasValue; }
 };
 
-extern bool enableValidationLayers;
+extern bool enable_validation_layers;
 extern VkInstance instance;
 extern VkSurfaceKHR surface;
 extern VkDebugUtilsMessengerEXT debugMessenger;
 extern VkDevice device;
 extern VkCommandPool commandPool;
+extern VkQueue graphicsQueue;
+extern VkQueue presentQueue;
+extern VkPhysicalDevice physicalDevice;
+extern VkPhysicalDeviceProperties properties;
 
 VkResult create_debug_utils_messenger_EXT(VkInstance instance, VkDebugUtilsMessengerCreateInfoEXT *pCreateInfo, VkAllocationCallbacks *pAllocator,
     VkDebugUtilsMessengerEXT *pDebugMessenger);
@@ -41,3 +45,11 @@ bool check_device_extension_support(VkPhysicalDevice device);
 swapchain_support_details query_swapchain_support(VkPhysicalDevice device);
 void create_logical_device();
 void create_command_pool();
+VkFormat find_supported_format(const std::vector<VkFormat> &candidates, VkImageTiling tiling, VkFormatFeatureFlags features);
+uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
+void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer &buffer, VkDeviceMemory &bufferMemory);
+VkCommandBuffer beginSingleTimeCommands();
+void endSingleTimeCommands(VkCommandBuffer commandBuffer);
+void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
+void copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height, uint32_t layerCount);
+void createImageWithInfo(const VkImageCreateInfo &imageInfo, VkMemoryPropertyFlags properties, VkImage &image, VkDeviceMemory &imageMemory);

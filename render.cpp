@@ -21,7 +21,7 @@ void render() {
     if(pick_physical_device() > 0) printf("Failed to pick physical device");
     create_logical_device();
     render_loop(&te_window);
-    if (enable_validation_layers) destroy_debug_utils_messenger_EXT(instance, debug_messenger, nullptr);
+    if (enable_validation_layers) destroy_debug_utils_messenger_EXT(instance, debugMessenger, nullptr);
     vkDestroyDevice(device, nullptr);
     vkDestroySurfaceKHR(instance, surface, nullptr);
     vkDestroyInstance(instance, nullptr);
