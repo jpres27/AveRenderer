@@ -18,7 +18,7 @@ void destroy_window(TeWindow *te_window){
 
 int create_window_surface(VkInstance instance, TeWindow *te_window, VkSurfaceKHR *surface) {
     if (glfwCreateWindowSurface(instance, te_window->window, nullptr, surface) != VK_SUCCESS) {
-        return -1;
+        return 1;
     }
     return 0;
 }
