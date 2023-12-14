@@ -4,6 +4,16 @@
 #include <cstdio>
 #include <cassert>
 
+// Comment back in the section below and the relevant part of the struct to use dynamic state for scissor/viewport
+/* std::vector<VkDynamicState> dynamic_states = {
+    VK_DYNAMIC_STATE_VIEWPORT,
+    VK_DYNAMIC_STATE_SCISSOR
+}; */
+
+VkPipeline graphics_pipeline;
+VkShaderModule vert_shader_module;
+VkShaderModule frag_shader_module;
+
 std::vector<char> read_file(std::string& filepath) {
     std::ifstream file{filepath, std::ios::ate | std::ios::binary};
     if(!file.is_open()) printf("\nFailed to open file: %s", filepath.c_str());
@@ -51,12 +61,17 @@ void create_graphics_pipeline(std::string& vert_filepath, std::string& frag_file
     vertex_input_info.pVertexAttributeDescriptions = nullptr;
     vertex_input_info.pVertexBindingDescriptions = nullptr;
 
+/*     VkPipelineDynamicStateCreateInfo dynamic_state{};
+    dynamicState.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
+    dynamicState.dynamicStateCount = static_cast<uint32_t>(dynamic_states.size());
+    dynamicState.pDynamicStates = dynamic_states.data(); */
+
     VkPipelineViewportStateCreateInfo viewport_info{};
     viewport_info.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
     viewport_info.viewportCount = 1;
-    viewport_info.pViewports = &config_info.viewport;
+    viewport_info.pViewports = &config_info.viewport; // comment out for dynamic 
     viewport_info.scissorCount = 1;
-    viewport_info.pScissors = &config_info.scissor;
+    viewport_info.pScissors = &config_info.scissor; // comment out for dynamic
 
     VkGraphicsPipelineCreateInfo pipeline_info{};
     pipeline_info.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
@@ -69,7 +84,7 @@ void create_graphics_pipeline(std::string& vert_filepath, std::string& frag_file
     pipeline_info.pMultisampleState = &config_info.multisample_info;
     pipeline_info.pColorBlendState = &config_info.color_blend_info;
     pipeline_info.pDepthStencilState = &config_info.depth_stencil_info;
-    pipeline_info.pDynamicState = nullptr;
+    pipeline_info.pDynamicState = nullptr; // needs a pointer to the dynamic state struct?
 
     pipeline_info.layout = config_info.pipeline_layout;
     pipeline_info.renderPass = config_info.render_pass;

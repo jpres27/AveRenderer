@@ -7,6 +7,11 @@
 #include <string>
 #include <vector>
 
+extern VkExtent2D swapchain_extent;
+extern VkRenderPass render_pass;
+extern std::vector<VkImage> swapchain_images;
+extern std::vector<VkFramebuffer> swapchain_framebuffers;
+
 void swapchain_init();
 void swapchain_destroy();
 
