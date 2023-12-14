@@ -1,4 +1,5 @@
 #include "render.h"
+#include "swapchain.h"
 
 #include <cstdio>
 
@@ -18,9 +19,12 @@ void render() {
     if(create_instance() > 0) printf("Failed to create instance \n");
     setup_debug_messenger();
     create_window_surface(instance, &te_window, &surface);
-    if(pick_physical_device() > 0) printf("Failed to pick physical device");
+    if(pick_physical_device() > 0) printf("Failed to pick physical device\n");
     create_logical_device();
+    swapchain_init();
+    // create_graphics_pipeline();
     render_loop(&te_window);
+    swapchain_destroy();
     if (enable_validation_layers) destroy_debug_utils_messenger_EXT(instance, debugMessenger, nullptr);
     vkDestroyDevice(device, nullptr);
     vkDestroySurfaceKHR(instance, surface, nullptr);

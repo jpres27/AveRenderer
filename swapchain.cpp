@@ -2,9 +2,35 @@
 
 #include <limits>
 #include <array>
+#include <cstdio>
 
-void swapchain_init(VkExtent2D extent) {
-    window_extent = extent;
+// max amt of command buffers that can be in submission at once
+static int MAX_FRAMES_IN_FLIGHT = 2;
+
+VkFormat swapchain_image_format;
+VkExtent2D swapchain_extent;
+
+std::vector<VkFramebuffer> swapchain_framebuffers;
+VkRenderPass render_pass;
+
+std::vector<VkImage> depth_images;
+std::vector<VkDeviceMemory> depth_image_memorys;
+std::vector<VkImageView> depth_image_views;
+std::vector<VkImage> swapchain_images;
+std::vector<VkImageView> swapchain_image_views;
+
+VkExtent2D window_extent;
+
+VkSwapchainKHR swapchain;
+
+std::vector<VkSemaphore> image_available_semaphores;
+std::vector<VkSemaphore> render_finished_semaphores;
+std::vector<VkFence> in_flight_fences;
+std::vector<VkFence> images_in_flight;
+size_t current_frame = 0;
+
+
+void swapchain_init() {
     create_swapchain();
     create_image_views();
     create_depth_resources();
@@ -42,6 +68,10 @@ void swapchain_destroy() {
     vkDestroySemaphore(device, image_available_semaphores[i], nullptr);
     vkDestroyFence(device, in_flight_fences[i], nullptr);
   }
+}
+
+float extent_aspect_ratio() {
+    return static_cast<float>(swapchain_extent.width) / static_cast<float>(swapchain_extent.height);
 }
 
 VkFormat find_depth_format() {
@@ -193,9 +223,9 @@ void create_depth_resources() {
   VkFormat depthFormat = find_depth_format();
   VkExtent2D cdr_swapchain_extent = swapchain_extent;
 
-  depth_images.resize(imageCount());
-  depth_image_memorys.resize(imageCount());
-  depth_image_views.resize(imageCount());
+  depth_images.resize(swapchain_images.size());
+  depth_image_memorys.resize(swapchain_images.size());
+  depth_image_views.resize(swapchain_images.size());
 
   for (int i = 0; i < depth_images.size(); i++) {
     VkImageCreateInfo imageInfo{};
@@ -300,7 +330,7 @@ void create_render_pass() {
 
 void create_framebuffers() {
   swapchain_framebuffers.resize(swapchain_images.size());
-  for (size_t i = 0; i < imageCount(); i++) {
+  for (size_t i = 0; i < swapchain_images.size(); i++) {
     std::array<VkImageView, 2> attachments = {swapchain_image_views[i], depth_image_views[i]};
 
     VkExtent2D swapChainExtent = swapchain_extent;
@@ -323,7 +353,7 @@ void create_sync_objects() {
   image_available_semaphores.resize(MAX_FRAMES_IN_FLIGHT);
   render_finished_semaphores.resize(MAX_FRAMES_IN_FLIGHT);
   in_flight_fences.resize(MAX_FRAMES_IN_FLIGHT);
-  images_in_flight.resize(imageCount(), VK_NULL_HANDLE);
+  images_in_flight.resize(swapchain_images.size(), VK_NULL_HANDLE);
 
   VkSemaphoreCreateInfo semaphoreInfo = {};
   semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;

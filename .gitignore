@@ -1,1 +1,3 @@
 VulkanTest
+test_shader.vert.spv
+test_shader.frag.spv
