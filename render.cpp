@@ -69,6 +69,22 @@ void create_command_buffers() {
         vkCmdBeginRenderPass(command_buffers[i], &render_pass_info, VK_SUBPASS_CONTENTS_INLINE);
 
         bind(command_buffers[i]);
+
+        // Dynamically setting viewport and scissor
+        VkViewport viewport{};
+        viewport.x = 0.0f;
+        viewport.y = 0.0f;
+        viewport.width = static_cast<float>(swapchain_extent.width);
+        viewport.height = static_cast<float>(swapchain_extent.height);
+        viewport.minDepth = 0.0f;
+        viewport.maxDepth = 1.0f;
+        vkCmdSetViewport(command_buffers[i], 0, 1, &viewport);
+
+        VkRect2D scissor{};
+        scissor.offset = {0, 0};
+        scissor.extent = swapchain_extent;
+        vkCmdSetScissor(command_buffers[i], 0, 1, &scissor);
+
         vkCmdDraw(command_buffers[i], 3, 1, 0, 0);
 
         vkCmdEndRenderPass(command_buffers[i]);

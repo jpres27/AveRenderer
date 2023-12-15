@@ -4,11 +4,10 @@
 #include <cstdio>
 #include <cassert>
 
-// Comment back in the section below and the relevant part of the struct to use dynamic state for scissor/viewport
-/* std::vector<VkDynamicState> dynamic_states = {
+std::vector<VkDynamicState> dynamic_states = {
     VK_DYNAMIC_STATE_VIEWPORT,
     VK_DYNAMIC_STATE_SCISSOR
-}; */
+};
 
 VkPipeline graphics_pipeline;
 VkShaderModule vert_shader_module;
@@ -61,17 +60,17 @@ void create_graphics_pipeline(std::string& vert_filepath, std::string& frag_file
     vertex_input_info.pVertexAttributeDescriptions = nullptr;
     vertex_input_info.pVertexBindingDescriptions = nullptr;
 
-/*     VkPipelineDynamicStateCreateInfo dynamic_state{};
-    dynamicState.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
-    dynamicState.dynamicStateCount = static_cast<uint32_t>(dynamic_states.size());
-    dynamicState.pDynamicStates = dynamic_states.data(); */
+    VkPipelineDynamicStateCreateInfo dynamic_state{};
+    dynamic_state.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
+    dynamic_state.dynamicStateCount = static_cast<uint32_t>(dynamic_states.size());
+    dynamic_state.pDynamicStates = dynamic_states.data();
 
     VkPipelineViewportStateCreateInfo viewport_info{};
     viewport_info.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
     viewport_info.viewportCount = 1;
-    viewport_info.pViewports = &config_info.viewport; // comment out for dynamic 
+    viewport_info.pViewports = nullptr;
     viewport_info.scissorCount = 1;
-    viewport_info.pScissors = &config_info.scissor; // comment out for dynamic
+    viewport_info.pScissors = nullptr;
 
     VkGraphicsPipelineCreateInfo pipeline_info{};
     pipeline_info.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
@@ -84,7 +83,7 @@ void create_graphics_pipeline(std::string& vert_filepath, std::string& frag_file
     pipeline_info.pMultisampleState = &config_info.multisample_info;
     pipeline_info.pColorBlendState = &config_info.color_blend_info;
     pipeline_info.pDepthStencilState = &config_info.depth_stencil_info;
-    pipeline_info.pDynamicState = nullptr; // needs a pointer to the dynamic state struct?
+    pipeline_info.pDynamicState = &dynamic_state;
 
     pipeline_info.layout = config_info.pipeline_layout;
     pipeline_info.renderPass = config_info.render_pass;
@@ -119,15 +118,14 @@ pipeline_config_info default_pipeline_config(uint32_t width, uint32_t height) {
     config_info.input_assembly_info.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
     config_info.input_assembly_info.primitiveRestartEnable = VK_FALSE;
 
-    config_info.viewport.x = 0.0f;
+/*     config_info.viewport.x = 0.0f;
     config_info.viewport.y = 0.0f;
     config_info.viewport.width = static_cast<float>(width);
     config_info.viewport.height = static_cast<float>(height);
     config_info.viewport.minDepth = 0.0f;
     config_info.viewport.maxDepth = 1.0f;
-
     config_info.scissor.offset = { 0, 0 };
-    config_info.scissor.extent = { width, height };
+    config_info.scissor.extent = { width, height }; */
 
     config_info.rasterization_info.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
     config_info.rasterization_info.depthClampEnable = VK_FALSE;
