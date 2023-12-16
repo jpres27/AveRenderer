@@ -118,15 +118,6 @@ pipeline_config_info default_pipeline_config(uint32_t width, uint32_t height) {
     config_info.input_assembly_info.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
     config_info.input_assembly_info.primitiveRestartEnable = VK_FALSE;
 
-/*     config_info.viewport.x = 0.0f;
-    config_info.viewport.y = 0.0f;
-    config_info.viewport.width = static_cast<float>(width);
-    config_info.viewport.height = static_cast<float>(height);
-    config_info.viewport.minDepth = 0.0f;
-    config_info.viewport.maxDepth = 1.0f;
-    config_info.scissor.offset = { 0, 0 };
-    config_info.scissor.extent = { width, height }; */
-
     config_info.rasterization_info.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
     config_info.rasterization_info.depthClampEnable = VK_FALSE;
     config_info.rasterization_info.rasterizerDiscardEnable = VK_FALSE;
@@ -177,7 +168,6 @@ pipeline_config_info default_pipeline_config(uint32_t width, uint32_t height) {
     config_info.depth_stencil_info.stencilTestEnable = VK_FALSE;
     config_info.depth_stencil_info.front = {};
     config_info.depth_stencil_info.back = {};
-
 
     return config_info;
 }

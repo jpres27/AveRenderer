@@ -12,12 +12,9 @@
     bool enable_validation_layers = true;
 #endif
 
-
 std::vector<const char*> validation_layers = {"VK_LAYER_KHRONOS_validation"};
 std::vector<const char *> deviceExtensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
 
-
-//externs
 VkInstance instance;
 VkDebugUtilsMessengerEXT debugMessenger;
 VkDevice device;
