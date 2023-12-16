@@ -27,6 +27,7 @@ std::vector<VkSemaphore> image_available_semaphores;
 std::vector<VkSemaphore> render_finished_semaphores;
 std::vector<VkFence> in_flight_fences;
 std::vector<VkFence> images_in_flight;
+bool framebuffer_resized = false;
 size_t current_frame = 0;
 
 
@@ -363,14 +364,25 @@ void create_sync_objects() {
   fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
 
   for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-    if (vkCreateSemaphore(device, &semaphoreInfo, nullptr, &image_available_semaphores[i]) !=
-            VK_SUCCESS ||
-        vkCreateSemaphore(device, &semaphoreInfo, nullptr, &render_finished_semaphores[i]) !=
-            VK_SUCCESS ||
+    if (vkCreateSemaphore(device, &semaphoreInfo, nullptr, &image_available_semaphores[i]) != VK_SUCCESS ||
+        vkCreateSemaphore(device, &semaphoreInfo, nullptr, &render_finished_semaphores[i]) != VK_SUCCESS ||
         vkCreateFence(device, &fenceInfo, nullptr, &in_flight_fences[i]) != VK_SUCCESS) {
-      printf("failed to create synchronization objects for a frame!");
+      printf("failed to create one or more sync objects");
     }
   }
+}
+
+// This is a very brute force implementation of this function which should be
+// rewritten later to not stop rendering while recreating by passing the previous
+// swapchain to oldSwapChain in VkCSwapchainCreateInfo struct and destroy the old
+// swapchain once we have finished using it. It is also unecessary to destroy and
+// recreate the sync objects as is done here and may even be causing issues to do 
+// so. See recreeating swapchain in vulkan-tutorial
+void recreate_swapchain() {
+  vkDeviceWaitIdle(device);
+
+  swapchain_destroy();
+  swapchain_init();
 }
 
 VkSurfaceFormatKHR choose_swap_surface_format(

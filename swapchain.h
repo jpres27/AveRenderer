@@ -11,6 +11,7 @@ extern VkExtent2D swapchain_extent;
 extern VkRenderPass render_pass;
 extern std::vector<VkImage> swapchain_images;
 extern std::vector<VkFramebuffer> swapchain_framebuffers;
+extern bool framebuffer_resized;
 
 void swapchain_init();
 void swapchain_destroy();
@@ -27,6 +28,7 @@ void create_depth_resources();
 void create_render_pass();
 void create_framebuffers();
 void create_sync_objects();
+void recreate_swapchain();
 
 VkSurfaceFormatKHR choose_swap_surface_format(std::vector<VkSurfaceFormatKHR> &available_formats);
 VkPresentModeKHR choose_swap_present_mode(std::vector<VkPresentModeKHR> &available_present_modes);
