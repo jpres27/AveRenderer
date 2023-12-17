@@ -101,17 +101,11 @@ void create_command_buffers() {
 void draw_frame() {
     uint32_t image_index;
     auto result = acquire_next_image(&image_index);
-    if (result == VK_ERROR_OUT_OF_DATE_KHR) {
-      recreate_swapchain();
-      return;
-    } else if(result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
+    if(result != VK_SUCCESS) {
         printf("Failed to acquire swap chain image");
     }
     result = submit_command_buffers(&command_buffers[image_index], &image_index);
-    if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || framebuffer_resized) {
-        framebuffer_resized = false;
-        recreate_swapchain();
-    } else if(result != VK_SUCCESS) printf("Failed to present swap chain image");
+        if(result != VK_SUCCESS) printf("Failed to present swap chain image");
 }
 
 void render_loop(TeWindow *te_window) {

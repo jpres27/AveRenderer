@@ -1,4 +1,5 @@
 #include "swapchain.h"
+#include "window.h"
 
 #include <limits>
 #include <array>
@@ -370,19 +371,6 @@ void create_sync_objects() {
       printf("failed to create one or more sync objects");
     }
   }
-}
-
-// This is a very brute force implementation of this function which should be
-// rewritten later to not stop rendering while recreating by passing the previous
-// swapchain to oldSwapChain in VkCSwapchainCreateInfo struct and destroy the old
-// swapchain once we have finished using it. It is also unecessary to destroy and
-// recreate the sync objects as is done here and may even be causing issues to do 
-// so. See recreeating swapchain in vulkan-tutorial
-void recreate_swapchain() {
-  vkDeviceWaitIdle(device);
-
-  swapchain_destroy();
-  swapchain_init();
 }
 
 VkSurfaceFormatKHR choose_swap_surface_format(
