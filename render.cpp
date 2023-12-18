@@ -95,9 +95,6 @@ void create_command_buffers() {
 
 }
 
-// Function currently considers VK_SUBOPTIMAL_KHR to be a successful return code
-// for acquire_next_image() but this could be updated later to also recreate the swapchain 
-// under this condition as is done for submit_command_buffers().
 void draw_frame() {
     uint32_t image_index;
     auto result = acquire_next_image(&image_index);
