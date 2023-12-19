@@ -56,9 +56,6 @@ void create_graphics_pipeline(std::string& vert_filepath, std::string& frag_file
 
     VkPipelineVertexInputStateCreateInfo vertex_input_info{};
     vertex_input_info.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-    // what is going on with these member functions is weird but I'll figure out something better later
-    auto binding_desc = vertices[0].binding_desc_gen();
-    auto attribute_desc = vertices[0].attribute_desc_gen();
     vertex_input_info.vertexAttributeDescriptionCount= 0;
     vertex_input_info.vertexBindingDescriptionCount = 0;
     vertex_input_info.pVertexAttributeDescriptions = nullptr;
