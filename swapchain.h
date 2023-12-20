@@ -24,8 +24,6 @@ void recreate_swapchain();
 
 float extent_aspect_ratio();
   
-VkFormat find_depth_format();
-
 void create_swapchain();
 void create_image_views();
 void create_render_pass();

@@ -8,9 +8,12 @@
 typedef struct Vertex {
     glm::vec2 pos;
     glm::vec3 color;
-    VkVertexInputBindingDescription binding_desc_gen();
-    std::array<VkVertexInputAttributeDescription, 2> attribute_desc_gen();
 } Vertex;
 
 extern std::vector<Vertex> vertices;
+extern VkBuffer vertex_buffer;
+extern VkDeviceMemory vertex_buffer_memory;
+
+void create_vertex_buffer();
+uint32_t find_memory_type(uint32_t type_filter, VkMemoryPropertyFlags properties);
 

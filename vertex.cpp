@@ -1,35 +1,62 @@
 #include "vertex.h"
-
+#include "device.h"
+#include <string.h>
 #include <vector>
-#include <array>
-
-VkVertexInputBindingDescription Vertex::binding_desc_gen() {
-    VkVertexInputBindingDescription binding_desc{};
-    binding_desc.binding = 0;
-    binding_desc.stride = sizeof(Vertex);                    // Number of bytes from one entry to the next
-    binding_desc.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;    // Moving to the next data entry after each vertex
-
-    return binding_desc;
-    }
-
-std::array<VkVertexInputAttributeDescription, 2> Vertex::attribute_desc_gen() {
-    static std::array<VkVertexInputAttributeDescription, 2> attribute_desc{};
-
-    attribute_desc[0].binding = 0;
-    attribute_desc[0].location = 0;
-    attribute_desc[0].format = VK_FORMAT_R32G32_SFLOAT;
-    attribute_desc[0].offset = offsetof(Vertex, pos); 
-
-    attribute_desc[1].binding = 0;
-    attribute_desc[1].location = 1;
-    attribute_desc[1].format = VK_FORMAT_R32G32B32_SFLOAT;
-    attribute_desc[1].offset = offsetof(Vertex, color);
-
-    return attribute_desc;
-}
+#include <cstdio>
 
 std::vector<Vertex> vertices = {
-    {{0.0f, -0.5f,}, {1.0f, 0.0f, 0.0f}},
+    {{0.0f, -0.5f,}, {1.0f, 1.0f, 1.0f}},
     {{0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}},
     {{-0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}}
 };
+
+// Buffer is destroyed and memory is freed within swapchain_destroy()
+VkBuffer vertex_buffer;
+VkDeviceMemory vertex_buffer_memory;
+
+void create_vertex_buffer() {
+    VkBufferCreateInfo buffer_info{};
+    buffer_info.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+    buffer_info.size = sizeof(vertices[0]) * vertices.size();
+    buffer_info.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
+    buffer_info.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+
+    if (vkCreateBuffer(device, &buffer_info, nullptr, &vertex_buffer) != VK_SUCCESS) {
+        printf("Failed to create vertex buffer!");
+    }
+
+    VkMemoryRequirements mem_requirements;
+    vkGetBufferMemoryRequirements(device, vertex_buffer, &mem_requirements);
+
+    VkMemoryAllocateInfo alloc_info{};
+    alloc_info.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+    alloc_info.allocationSize = mem_requirements.size;
+    alloc_info.memoryTypeIndex = find_memory_type(mem_requirements.memoryTypeBits, 
+                                                  VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | 
+                                                  VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+    
+    if (vkAllocateMemory(device, &alloc_info, nullptr, &vertex_buffer_memory) != VK_SUCCESS) {
+        printf("Failed to allocate vertex buffer memory!\n");
+    }
+
+    vkBindBufferMemory(device, vertex_buffer, vertex_buffer_memory, 0);
+
+    void* data;
+    vkMapMemory(device, vertex_buffer_memory, 0, buffer_info.size, 0, &data);
+    memcpy(data, vertices.data(), static_cast<size_t>(buffer_info.size));
+    vkUnmapMemory(device, vertex_buffer_memory);
+}
+
+// TODO: come back and fully understand what is happening with the bit shifting
+uint32_t find_memory_type(uint32_t type_filter, VkMemoryPropertyFlags properties) {
+    VkPhysicalDeviceMemoryProperties mem_properties;
+    vkGetPhysicalDeviceMemoryProperties(physicalDevice, &mem_properties);
+
+    for (uint32_t i = 0; i < mem_properties.memoryTypeCount; i++) {
+        if ((type_filter & (1 << i)) && (mem_properties.memoryTypes[i].propertyFlags & properties) == properties) {
+            return i;
+        }
+    }
+    printf("Failed to find suitable memory type!\n");
+    return -1;
+}

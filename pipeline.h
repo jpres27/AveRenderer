@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <array>
 #include "device.h"
 
 extern VkPipeline graphics_pipeline;
@@ -22,10 +23,9 @@ struct pipeline_config_info {
     uint32_t subpass = 0;
 };
 
-// TePipeline(TeDevice &device, const std::string& vert_filepath, const std::string& frag_filepath, const pipeline_config_info pipe_ci);
-
-
 static std::vector<char> read_file(std::string& filepath);
+VkVertexInputBindingDescription binding_desc_gen();
+std::array<VkVertexInputAttributeDescription, 2> attribute_desc_gen();
 pipeline_config_info default_pipeline_config(uint32_t width, uint32_t height);
 void create_graphics_pipeline(std::string& vert_filepath, std::string& frag_filepath, pipeline_config_info pipe_ci);
 void create_shader_module(std::vector<char>& shader_program, VkShaderModule* shader_module);

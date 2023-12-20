@@ -28,6 +28,31 @@ std::vector<char> read_file(std::string& filepath) {
     return buffer;
 }
 
+VkVertexInputBindingDescription binding_desc_gen() {
+    VkVertexInputBindingDescription binding_desc{};
+    binding_desc.binding = 0;
+    binding_desc.stride = sizeof(Vertex);                    // Number of bytes from one entry to the next
+    binding_desc.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;    // Moving to the next data entry after each vertex
+
+    return binding_desc;
+    }
+
+std::array<VkVertexInputAttributeDescription, 2> attribute_desc_gen() {
+    static std::array<VkVertexInputAttributeDescription, 2> attribute_desc{};
+
+    attribute_desc[0].binding = 0;
+    attribute_desc[0].location = 0;
+    attribute_desc[0].format = VK_FORMAT_R32G32_SFLOAT;
+    attribute_desc[0].offset = offsetof(Vertex, pos); 
+
+    attribute_desc[1].binding = 0;
+    attribute_desc[1].location = 1;
+    attribute_desc[1].format = VK_FORMAT_R32G32B32_SFLOAT;
+    attribute_desc[1].offset = offsetof(Vertex, color);
+
+    return attribute_desc;
+}
+
 void create_graphics_pipeline(std::string& vert_filepath, std::string& frag_filepath, pipeline_config_info config_info) {
     assert(config_info.pipeline_layout != VK_NULL_HANDLE && "No pipeline_layout provided in config_info");
     assert(config_info.render_pass != VK_NULL_HANDLE && "No render_pass provided in config_info");
@@ -54,12 +79,14 @@ void create_graphics_pipeline(std::string& vert_filepath, std::string& frag_file
     shader_stages[1].pNext = nullptr;
     shader_stages[1].pSpecializationInfo = nullptr;
 
+    auto binding_desc = binding_desc_gen();
+    auto attribute_desc = attribute_desc_gen();
     VkPipelineVertexInputStateCreateInfo vertex_input_info{};
     vertex_input_info.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-    vertex_input_info.vertexAttributeDescriptionCount= 0;
-    vertex_input_info.vertexBindingDescriptionCount = 0;
-    vertex_input_info.pVertexAttributeDescriptions = nullptr;
-    vertex_input_info.pVertexBindingDescriptions = nullptr;
+    vertex_input_info.vertexAttributeDescriptionCount= static_cast<uint32_t>(attribute_desc.size());
+    vertex_input_info.vertexBindingDescriptionCount = 1;
+    vertex_input_info.pVertexAttributeDescriptions = attribute_desc.data();
+    vertex_input_info.pVertexBindingDescriptions = &binding_desc;
 
     VkPipelineDynamicStateCreateInfo dynamic_state{};
     dynamic_state.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;

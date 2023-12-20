@@ -1,5 +1,5 @@
 #include "render.h"
-
+#include "vertex.h"
 #include <cstdio>
 #include <array>
 #include <limits>
@@ -90,7 +90,11 @@ void record_command_buffer(VkCommandBuffer command_buffer, uint32_t image_index)
         scissor.extent = swapchain_extent;
         vkCmdSetScissor(command_buffer, 0, 1, &scissor);
 
-        vkCmdDraw(command_buffer, 3, 1, 0, 0);
+        VkBuffer vertex_buffers[] = {vertex_buffer};
+        VkDeviceSize offsets[] = {0};
+        vkCmdBindVertexBuffers(command_buffer, 0, 1, vertex_buffers, offsets);
+
+        vkCmdDraw(command_buffer, static_cast<uint32_t>(vertices.size()), 1, 0, 0);
 
         vkCmdEndRenderPass(command_buffer);
         if(vkEndCommandBuffer(command_buffer) != VK_SUCCESS) {
@@ -197,10 +201,12 @@ void render() {
     printf("Framebuffers created.\n");
     create_command_pool();
     printf("Command pool created.\n");
+    create_vertex_buffer();
+    printf("Vertex buffer created.\n");
     create_command_buffers();
     printf("Command buffers created.\n");
     create_sync_objects();
-    printf("Sync objects created.\n Entering render loop.\n");
+    printf("Sync objects created.\nEntering render loop.\n");
     render_loop(&te_window);
     vkDestroyCommandPool(device, commandPool, nullptr);
     vkDestroyPipeline(device, graphics_pipeline, nullptr);

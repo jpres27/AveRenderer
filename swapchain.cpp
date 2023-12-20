@@ -1,6 +1,6 @@
 #include "swapchain.h"
 #include "window.h"
-
+#include "vertex.h"
 #include <limits>
 #include <array>
 #include <cstdio>
@@ -30,6 +30,9 @@ void swapchain_destroy() {
   swapchain_cleanup();
 
   vkDestroyRenderPass(device, render_pass, nullptr);
+
+  vkDestroyBuffer(device, vertex_buffer, nullptr);
+  vkFreeMemory(device, vertex_buffer_memory, nullptr);
 
   // cleanup synchronization objects
   for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
