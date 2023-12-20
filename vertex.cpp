@@ -22,7 +22,7 @@ void create_vertex_buffer() {
     buffer_info.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
     if (vkCreateBuffer(device, &buffer_info, nullptr, &vertex_buffer) != VK_SUCCESS) {
-        printf("Failed to create vertex buffer!");
+        printf("Failed to create vertex buffer!\n");
     }
 
     VkMemoryRequirements mem_requirements;

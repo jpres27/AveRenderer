@@ -26,7 +26,7 @@ void create_pipeline_layout() {
     pipeline_layout_info.pushConstantRangeCount = 0;
     pipeline_layout_info.pPushConstantRanges = nullptr;
     if(vkCreatePipelineLayout(device, &pipeline_layout_info, nullptr, &pipeline_layout) != VK_SUCCESS) {
-        printf("Failed to create pipeline layout");
+        printf("Failed to create pipeline layout!\n");
     }
 }
 
@@ -45,7 +45,7 @@ void create_command_buffers() {
     alloc_info.commandPool = commandPool;
     alloc_info.commandBufferCount = static_cast<uint32_t>(command_buffers.size());
     if(vkAllocateCommandBuffers(device, &alloc_info, command_buffers.data()) != VK_SUCCESS) {
-        printf("Failed to allocate command buffer");
+        printf("Failed to allocate command buffer!\n");
     }
 }
 
@@ -54,7 +54,7 @@ void record_command_buffer(VkCommandBuffer command_buffer, uint32_t image_index)
         begin_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
         if(vkBeginCommandBuffer(command_buffer, &begin_info) != VK_SUCCESS) {
-            printf("Failed to begin recording command buffer");
+            printf("Failed to begin recording command buffer!\n");
         }
 
         VkRenderPassBeginInfo render_pass_info{};
@@ -98,7 +98,7 @@ void record_command_buffer(VkCommandBuffer command_buffer, uint32_t image_index)
 
         vkCmdEndRenderPass(command_buffer);
         if(vkEndCommandBuffer(command_buffer) != VK_SUCCESS) {
-            printf("Failed to record command buffer");
+            printf("Failed to record command buffer!\n");
         }
 }
 
@@ -114,7 +114,7 @@ void draw_frame() {
         recreate_swapchain();
         return;
     } else if(result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
-        printf("Failed to acquire swap chain image");
+        printf("Failed to acquire swap chain image!\n");
     }
 
     vkResetFences(device, 1, &in_flight_fences[current_frame]);
@@ -142,7 +142,7 @@ void draw_frame() {
 
     if (vkQueueSubmit(graphicsQueue, 1, &submitInfo, in_flight_fences[current_frame]) !=
         VK_SUCCESS) {
-        printf("failed to submit draw command buffer!");
+        printf("Failed to submit draw command buffer!\n");
     }
 
     VkPresentInfoKHR presentInfo = {};
@@ -161,7 +161,7 @@ void draw_frame() {
     if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || framebuffer_resized) {
         framebuffer_resized = false;
         recreate_swapchain();
-    } else if(result != VK_SUCCESS) printf("Failed to present swap chain image");
+    } else if(result != VK_SUCCESS) printf("Failed to present swap chain image!\n");
 
     current_frame = (current_frame + 1) % MAX_FRAMES_IN_FLIGHT;
 }
@@ -177,13 +177,13 @@ void render_loop(TeWindow *te_window) {
 void render() {
     init_window(WIDTH, HEIGHT, "Ave!", &te_window);
     printf("Window created.\n");
-    if(create_instance() > 0) printf("Failed to create instance \n");
+    if(create_instance() > 0) printf("Failed to create instance!\n");
     printf("Instance created.\n");
     setup_debug_messenger();
     printf("Debug messenger setup.\n");
     create_window_surface(instance, &te_window, &surface);
     printf("Window surface created.\n");
-    if(pick_physical_device() > 0) printf("Failed to pick physical device\n");
+    if(pick_physical_device() > 0) printf("Failed to pick physical device!\n");
     printf("Physical device picked.\n");
     create_logical_device();
     printf("Logical device created.\n");

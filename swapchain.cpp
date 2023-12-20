@@ -124,7 +124,7 @@ void create_swapchain() {
   createInfo.oldSwapchain = VK_NULL_HANDLE;
 
   if (vkCreateSwapchainKHR(device, &createInfo, nullptr, &swapchain) != VK_SUCCESS) {
-    printf("failed to create swap chain!");
+    printf("failed to create swap chain!\n");
   }
 
   // we only specified a minimum number of images in the swap chain, so the implementation is
@@ -154,7 +154,7 @@ void create_image_views() {
     viewInfo.subresourceRange.layerCount = 1;
 
     if (vkCreateImageView(device, &viewInfo, nullptr, &swapchain_image_views[i]) != VK_SUCCESS) {
-      printf("failed to create texture image view!");
+      printf("failed to create texture image view!\n");
     }
   }
 }
@@ -200,7 +200,7 @@ void create_render_pass() {
   renderPassInfo.pDependencies = &dependency;
 
   if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &render_pass) != VK_SUCCESS) {
-    printf("failed to create render pass!");
+    printf("Failed to create render pass!\n");
   }
 }
 
@@ -220,7 +220,7 @@ void create_framebuffers() {
     framebufferInfo.layers = 1;
 
     if (vkCreateFramebuffer(device, &framebufferInfo, nullptr, &swapchain_framebuffers[i]) != VK_SUCCESS) {
-      printf("failed to create framebuffer!");
+      printf("Failed to create framebuffer!\n");
     }
   }
 }
@@ -242,7 +242,7 @@ void create_sync_objects() {
     if (vkCreateSemaphore(device, &semaphoreInfo, nullptr, &image_available_semaphores[i]) != VK_SUCCESS ||
         vkCreateSemaphore(device, &semaphoreInfo, nullptr, &render_finished_semaphores[i]) != VK_SUCCESS ||
         vkCreateFence(device, &fenceInfo, nullptr, &in_flight_fences[i]) != VK_SUCCESS) {
-      printf("failed to create one or more sync objects");
+      printf("Failed to create one or more sync objects!\n");
     }
   }
 }

@@ -70,7 +70,7 @@ void has_gflw_required_instance_extensions() {
     for (const auto &required : requiredExtensions) {
         printf("%s\n", required);
         if (available.find(required) == available.end()) {
-            printf("Missing required GLFW extension");
+            printf("Missing required GLFW extension!\n");
         }
     }        
 }
@@ -119,7 +119,7 @@ void setup_debug_messenger() {
     VkDebugUtilsMessengerCreateInfoEXT create_info;
     populate_debug_messenger_create_info(create_info);
     if (create_debug_utils_messenger_EXT(instance, &create_info, nullptr, &debugMessenger) != VK_SUCCESS) {
-        printf("failed to set up debug messenger!");
+        printf("Failed to set up debug messenger!\n");
     }
 }
 
@@ -137,7 +137,7 @@ void populate_debug_messenger_create_info(VkDebugUtilsMessengerCreateInfoEXT &cr
 
 int create_instance() {
     if (enable_validation_layers && !check_validation_layer_support()) {
-        printf("Validation layers requested, but not available");
+        printf("Validation layers requested, but not available.\n");
     }
 
     VkApplicationInfo app_info{};
@@ -196,7 +196,7 @@ int pick_physical_device() {
   }
 
   if (physicalDevice == VK_NULL_HANDLE) {
-    printf("failed to find a suitable GPU!");
+    printf("Failed to find a suitable GPU!\n");
     return 1;
   }
 
@@ -339,7 +339,7 @@ void create_logical_device() {
   }
 
   if (vkCreateDevice(physicalDevice, &createInfo, nullptr, &device) != VK_SUCCESS) {
-    printf("failed to create logical device!");
+    printf("Failed to create logical device!\n");
   }
 
   vkGetDeviceQueue(device, indices.graphicsFamily, 0, &graphicsQueue);
@@ -356,7 +356,7 @@ void create_command_pool() {
       VK_COMMAND_POOL_CREATE_TRANSIENT_BIT | VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
 
   if (vkCreateCommandPool(device, &poolInfo, nullptr, &commandPool) != VK_SUCCESS) {
-    printf("failed to create command pool!");
+    printf("Failed to create command pool!\n");
   }
 }
 
@@ -373,7 +373,7 @@ VkFormat find_supported_format(const std::vector<VkFormat> &candidates, VkImageT
       return format;
     }
   }
-  printf("failed to find supported format!");
+  printf("Failed to find supported format!\n");
   VkFormat no_format;
   return no_format;
 }
@@ -389,7 +389,7 @@ uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties) {
     }
   }
 
-  printf("failed to find suitable memory type!");
+  printf("Failed to find suitable memory type!\n");
   return 0;
 }
 
@@ -401,7 +401,7 @@ void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyF
   bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
   if (vkCreateBuffer(device, &bufferInfo, nullptr, &buffer) != VK_SUCCESS) {
-    printf("failed to create vertex buffer!");
+    printf("Failed to create vertex buffer!\n");
   }
 
   VkMemoryRequirements memRequirements;
@@ -413,7 +413,7 @@ void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyF
   allocInfo.memoryTypeIndex = findMemoryType(memRequirements.memoryTypeBits, properties);
 
   if (vkAllocateMemory(device, &allocInfo, nullptr, &bufferMemory) != VK_SUCCESS) {
-    printf("failed to allocate vertex buffer memory!");
+    printf("Failed to allocate vertex buffer memory!\n");
   }
 
   vkBindBufferMemory(device, buffer, bufferMemory, 0);
@@ -485,7 +485,7 @@ void copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t 
 
 void createImageWithInfo(const VkImageCreateInfo &imageInfo, VkMemoryPropertyFlags properties, VkImage &image, VkDeviceMemory &imageMemory) {
   if (vkCreateImage(device, &imageInfo, nullptr, &image) != VK_SUCCESS) {
-    printf("failed to create image!");
+    printf("Failed to create image!\n");
   }
 
   VkMemoryRequirements memRequirements;
@@ -497,10 +497,10 @@ void createImageWithInfo(const VkImageCreateInfo &imageInfo, VkMemoryPropertyFla
   allocInfo.memoryTypeIndex = findMemoryType(memRequirements.memoryTypeBits, properties);
 
   if (vkAllocateMemory(device, &allocInfo, nullptr, &imageMemory) != VK_SUCCESS) {
-    printf("failed to allocate image memory!");
+    printf("Failed to allocate image memory!\n");
   }
 
   if (vkBindImageMemory(device, image, imageMemory, 0) != VK_SUCCESS) {
-    printf("failed to bind image memory!");
+    printf("Failed to bind image memory!\n");
   }
 }

@@ -16,7 +16,7 @@ VkShaderModule frag_shader_module;
 
 std::vector<char> read_file(std::string& filepath) {
     std::ifstream file{filepath, std::ios::ate | std::ios::binary};
-    if(!file.is_open()) printf("\nFailed to open file: %s", filepath.c_str());
+    if(!file.is_open()) printf("\nFailed to open file: %s!\n", filepath.c_str());
 
     size_t file_size = static_cast<size_t>(file.tellg());
     std::vector<char> buffer(file_size);
@@ -121,7 +121,7 @@ void create_graphics_pipeline(std::string& vert_filepath, std::string& frag_file
     pipeline_info.basePipelineHandle = VK_NULL_HANDLE;
 
     if(vkCreateGraphicsPipelines(device, VK_NULL_HANDLE, 1, &pipeline_info, nullptr, &graphics_pipeline) != VK_SUCCESS) {
-        printf("Failed to create graphics pipeline");
+        printf("Failed to create graphics pipeline!\n");
     }
 
     vkDestroyShaderModule(device, vert_shader_module, nullptr);
@@ -135,7 +135,7 @@ void create_shader_module(std::vector<char>& code, VkShaderModule* shader_module
     create_info.pCode = reinterpret_cast<const uint32_t*>(code.data());
 
     if(vkCreateShaderModule(device, &create_info, nullptr, shader_module) != VK_SUCCESS) {
-        printf("Failed to create shader module");
+        printf("Failed to create shader module!\n");
     }
 }
 
