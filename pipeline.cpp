@@ -96,6 +96,9 @@ void create_graphics_pipeline(std::string& vert_filepath, std::string& frag_file
     if(vkCreateGraphicsPipelines(device, VK_NULL_HANDLE, 1, &pipeline_info, nullptr, &graphics_pipeline) != VK_SUCCESS) {
         printf("Failed to create graphics pipeline");
     }
+
+    vkDestroyShaderModule(device, vert_shader_module, nullptr);
+    vkDestroyShaderModule(device, frag_shader_module, nullptr);
 }
 
 void create_shader_module(std::vector<char>& code, VkShaderModule* shader_module) {

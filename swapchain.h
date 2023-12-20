@@ -11,19 +11,23 @@ extern VkExtent2D swapchain_extent;
 extern VkRenderPass render_pass;
 extern std::vector<VkImage> swapchain_images;
 extern std::vector<VkFramebuffer> swapchain_framebuffers;
+extern std::vector<VkFence> in_flight_fences;
+extern std::vector<VkFence> images_in_flight;
+extern VkSwapchainKHR swapchain;
+extern std::vector<VkSemaphore> image_available_semaphores;
+extern std::vector<VkSemaphore> render_finished_semaphores;
+extern int MAX_FRAMES_IN_FLIGHT;
 
-void swapchain_init();
 void swapchain_destroy();
+void swapchain_cleanup();
+void recreate_swapchain();
 
 float extent_aspect_ratio();
   
 VkFormat find_depth_format();
-VkResult acquire_next_image(uint32_t *image_index);
-VkResult submit_command_buffers(VkCommandBuffer *buffers, uint32_t *image_index);
 
 void create_swapchain();
 void create_image_views();
-void create_depth_resources();
 void create_render_pass();
 void create_framebuffers();
 void create_sync_objects();
