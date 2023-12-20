@@ -68,7 +68,7 @@ void create_command_buffers() {
 
         vkCmdBeginRenderPass(command_buffers[i], &render_pass_info, VK_SUBPASS_CONTENTS_INLINE);
 
-        bind(command_buffers[i]);
+        vkCmdBindPipeline(command_buffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, graphics_pipeline);
 
         // Dynamically setting viewport and scissor
         VkViewport viewport{};

@@ -109,10 +109,6 @@ void create_shader_module(std::vector<char>& code, VkShaderModule* shader_module
     }
 }
 
-void bind(VkCommandBuffer command_buffer) {
-    vkCmdBindPipeline(command_buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphics_pipeline);
-}
-
 pipeline_config_info default_pipeline_config(uint32_t width, uint32_t height) {
     pipeline_config_info config_info{};
     config_info.input_assembly_info.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
